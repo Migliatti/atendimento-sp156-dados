@@ -58,13 +58,15 @@ After cleaning, {n(stats['rows_out'])} requests ({n(stats['dropped_test_records'
 Every number below comes from a query in `sql/`; the result of each query is saved in `reports/tables/`.
 Read the "Limits" section before quoting any of these numbers.
 
-## 1. About {n(month['requests'].mean())} requests arrive every month, and the share closed drops for the newest month
+## 1. About {int(round(month['requests'].mean()/1000))} thousand requests arrive every month, and the share closed drops for the newest month
 
 - Total in the quarter: {n(total)}. Per month: {", ".join(f"{r.month} = {n(r.requests)}" for r in month.itertuples())}.
 - The closed share goes from {first.closed_pct}% ({first.month}) to {last.closed_pct}% ({last.month}).
   A likely reason is timing: newer requests have had less time to be closed (my reading;
   the data alone cannot prove it). It should not be read as the service getting worse.
 - Query: `sql/01_volume_by_month.sql`. Chart: `reports/01_requests_per_day.png`.
+
+![requests per day](01_requests_per_day.png)
 
 ## 2. Requests follow the work week
 
@@ -73,6 +75,10 @@ Read the "Limits" section before quoting any of these numbers.
 - {FULL[lowest_wd]} is the lowest weekday on average ({n(wk.loc[lowest_wd, 'avg_requests_per_day'])} per day).
 - The lowest weekday of the quarter was {low['day']} with {n(low['requests'])} requests{holiday}.
 - Queries: `sql/07_weekday_pattern.sql` and `sql/02_volume_by_day.sql`. Charts: `reports/06_weekday.png`, `reports/01_requests_per_day.png`.
+
+![weekday](06_weekday.png)
+
+![requests per day](01_requests_per_day.png)
 - The file only has dates, with no time of day, so a pattern by hour cannot be checked.
 
 ## 3. A few themes account for most of the volume
@@ -82,6 +88,10 @@ Read the "Limits" section before quoting any of these numbers.
   ({top_subject['share_pct']}% of the total), under the theme "{top_subject['theme']}".
 - Queries: `sql/03_volume_by_theme.sql` and `sql/04_top_subjects.sql`. Charts: `reports/02_top_themes.png`, `reports/03_top_subjects.png`.
 
+![top themes](02_top_themes.png)
+
+![top subjects](03_top_subjects.png)
+
 ## 4. Time to close varies a lot by theme
 
 - Among closed requests, the median is {fast['median_days']:.0f} day(s) for "{fast['theme']}" and
@@ -89,6 +99,8 @@ Read the "Limits" section before quoting any of these numbers.
 - Among the larger half of themes (at least {n(big_cut)} closed requests), the slowest median is "{slow_big['theme']}":
   {slow_big['median_days']:.0f} days (90% of them closed within {slow_big['p90_days']:.0f} days).
 - Query: `sql/05_time_to_close_by_theme.sql`. Chart: `reports/04_time_to_close.png`.
+
+![time to close](04_time_to_close.png)
 - Median is used instead of average because a few very slow requests pull the average up.
 
 ## 5. The backlog is concentrated in a few themes
@@ -97,6 +109,8 @@ Read the "Limits" section before quoting any of these numbers.
   ({big_backlog['backlog_pct']}% of its requests), on average {big_backlog['avg_backlog_age_days']:.0f} days old at the end of the quarter.
 - The highest backlog share is "{worst_pct['theme']}": {worst_pct['backlog_pct']}% of its {n(worst_pct['requests'])} requests.
 - Query: `sql/06_backlog_by_theme.sql`. Chart: `reports/05_backlog.png`.
+
+![backlog](05_backlog.png)
 
 ## Extra: channels
 
