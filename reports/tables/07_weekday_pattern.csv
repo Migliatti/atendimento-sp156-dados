@@ -1,0 +1,8 @@
+weekday,weekday_num,days_in_period,avg_requests_per_day
+Mon,1,13,6237.0
+Tue,2,13,6717.0
+Wed,3,14,6522.0
+Thu,4,13,6099.0
+Fri,5,13,5581.0
+Sat,6,13,2955.0
+Sun,0,13,2622.0
